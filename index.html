@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор промптов v18 (Google Gemini)</title>
+    <title>Генератор промптов</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='glow' cx='30%25' cy='30%25'%3E%3Cstop offset='0%25' stop-color='%23c084fc'/%3E%3Cstop offset='70%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='28' fill='url(%23glow)' stroke='%23e9d5ff' stroke-width='3' opacity='0.95'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%231e1b4b' opacity='0.6'/%3E%3Cg transform='translate(18,28) scale(0.8)' opacity='0.7'%3E%3Crect x='0' y='0' width='28' height='8' rx='2' fill='%23ddd'/%3E%3Crect x='2' y='10' width='5' height='5' rx='1' fill='%23555'/%3E%3Crect x='9' y='10' width='5' height='5' rx='1' fill='%23555'/%3E%3Crect x='16' y='10' width='5' height='5' rx='1' fill='%23555'/%3E%3Crect x='23' y='10' width='5' height='5' rx='1' fill='%23555'/%3E%3Crect x='6' y='16' width='16' height='5' rx='1' fill='%234ade80'/%3E%3C/g%3E%3Ccircle cx='22' cy='20' r='8' fill='%23fff' opacity='0.4'/%3E%3Ccircle cx='20' cy='18' r='4' fill='%23fff' opacity='0.7'/%3E%3C/svg%3E">
     <style>
         :root {
@@ -877,12 +877,6 @@
             opacity: 0.8;
         }
 
-        .image-preview-wrapper {
-            position: relative;
-            display: inline-block;
-            margin: 15px auto;
-        }
-
         .image-preview {
             max-width: 100%;
             max-height: 400px;
@@ -892,31 +886,7 @@
             box-shadow: var(--shadow);
         }
 
-        .remove-image-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        .remove-image-btn:hover {
-            background: #dc2626;
-            transform: scale(1.1);
-        }
-
-        .gemini-token-container {
+        .hf-token-container {
             margin: 15px 0;
         }
 
@@ -974,7 +944,7 @@
             background: var(--primary-light);
         }
 
-        .gemini-help-btn {
+        .hf-help-btn {
             display: inline-block;
             margin-left: 10px;
             padding: 4px 12px;
@@ -988,7 +958,7 @@
             text-decoration: none;
         }
 
-        .gemini-help-btn:hover {
+        .hf-help-btn:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
@@ -1190,21 +1160,21 @@
     <!-- === НОВЫЙ БЛОК: Распознавание изображений === -->
     <div class="image-recognition-container">
         <div class="section-header" onclick="toggleSection('image-recognition')">
-            <h3>🖼️ Распознавание изображений (Google Gemini AI)</h3>
+            <h3>🖼️ Распознавание изображений (Hugging Face LLaVA)</h3>
             <span class="toggle-icon collapsed" id="image-recognition-toggle">▼</span>
         </div>
         <div class="section-content" id="image-recognition-content">
             <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">
-                Загрузите изображение, чтобы получить текстовый промпт для генерации похожих изображений с помощью Google Gemini AI.
+                Загрузите изображение, чтобы получить текстовый промпт для генерации похожих изображений.
             </p>
 
-            <div class="gemini-token-container">
-                <label for="hf-token">🔑 Google Gemini API ключ:
-                    <button class="gemini-help-btn" onclick="openGeminiHelpModal()">❓ Инструкция</button>
+            <div class="hf-token-container">
+                <label for="hf-token">🔑 Hugging Face API токен:
+                    <button class="hf-help-btn" onclick="openHFHelpModal()">❓ Инструкция</button>
                 </label>
-                <input type="password" id="gemini-api-key" placeholder="AIzaSy...">
+                <input type="password" id="hf-token" placeholder="hf_...">
                 <label class="remember-key-checkbox">
-                    <input type="checkbox" id="remember-gemini-key">
+                    <input type="checkbox" id="remember-hf-token">
                     <span>Запомнить токен между сессиями</span>
                 </label>
             </div>
@@ -1245,30 +1215,16 @@
     </div>
 
     <!-- === НОВАЯ МОДАЛКА: Инструкция для Hugging Face === -->
-    <div id="gemini-help-modal" class="modal">
+    <div id="hf-help-modal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeGeminiHelpModal()">&times;</span>
+            <span class="close-modal" onclick="closeHFHelpModal()">&times;</span>
             <h3>❓ Как получить токен Hugging Face</h3>
             <ol>
-                <li><strong>Перейдите на Google AI Studio:</strong> Откройте <a href="https://aistudio.google.com/app/apikey" target="_blank">https://aistudio.google.com/app/apikey</a> в браузере</li>
-                <li><strong>Войдите в аккаунт Google:</strong> Используйте свой Google аккаунт для входа (Gmail и т.д.)</li>
-                <li><strong>Создайте API ключ:</strong> 
-                    <ul>
-                        <li>Нажмите кнопку <strong>"Create API key"</strong></li>
-                        <li>Выберите существующий проект Google Cloud или создайте новый</li>
-                        <li>Ключ будет сгенерирован автоматически</li>
-                    </ul>
-                </li>
-                <li><strong>Скопируйте ключ:</strong> Нажмите на кнопку копирования рядом с ключом. <strong>Сохраните ключ в надёжном месте!</strong></li>
-                <li><strong>Бесплатный доступ:</strong> 
-                    <ul>
-                        <li>✅ <strong>60 запросов в минуту</strong> (бесплатно)</li>
-                        <li>✅ Модель <strong>Gemini 1.5 Flash</strong> (быстрая и точная)</li>
-                        <li>✅ Поддержка изображений до <strong>20 МБ</strong></li>
-                        <li>✅ Отличное качество распознавания</li>
-                    </ul>
-                </li>
-                <li><strong>Вставьте ключ:</strong> Скопируйте ключ в поле "Google Gemini API ключ" выше и включите чекбокс "Запомнить ключ"</li>
+                <li><strong>Регистрация:</strong> Перейдите на <a href="https://huggingface.co/join" target="_blank">https://huggingface.co/join</a> и создайте бесплатный аккаунт. Регистрация занимает несколько минут.</li>
+                <li><strong>Получение токена:</strong> После входа перейдите в настройки токенов: <a href="https://huggingface.co/settings/tokens" target="_blank">https://huggingface.co/settings/tokens</a></li>
+                <li><strong>Создание токена:</strong> Нажмите "New token", выберите тип "Read" (для чтения моделей достаточно), дайте имя токену и нажмите "Generate".</li>
+                <li><strong>Сохранение:</strong> Скопируйте токен и вставьте в поле выше. <strong>Токен отображается только один раз!</strong> Сохраните его в надёжном месте или используйте чекбокс "Запомнить токен".</li>
+                <li><strong>Модель:</strong> Используется бесплатная модель <code>llava-hf/llava-1.5-7b-hf</code> для распознавания изображений и генерации промптов.</li>
             </ol>
         </div>
     </div>
@@ -1330,9 +1286,9 @@
         const API_KEY_STORAGE = 'flux_groq_api_key';
         const REMEMBER_KEY_FLAG = 'flux_remember_api_key';
         const HF_TOKEN_STORAGE = 'flux_hf_api_token';
-        const REMEMBER_GEMINI_KEY_FLAG = 'flux_remember_gemini_key';
+        const REMEMBER_HF_TOKEN_FLAG = 'flux_remember_hf_token';
         let GROQ_KEY = '';
-        let GEMINI_KEY = '';
+        let HF_TOKEN = '';
         let SELECTED_MODEL = localStorage.getItem(MODEL_KEY) || 'llama3-8b-8192';
         let currentImageFile = null;
 
@@ -1350,7 +1306,7 @@
             }
 
             const rememberHFToken = localStorage.getItem(REMEMBER_HF_TOKEN_FLAG) === 'true';
-            document.getElementById('remember-gemini-key').checked = rememberHFToken;
+            document.getElementById('remember-hf-token').checked = rememberHFToken;
             if (rememberHFToken) {
                 const savedToken = localStorage.getItem(HF_TOKEN_STORAGE);
                 if (savedToken) {
@@ -1369,10 +1325,10 @@
                 }
             });
 
-            document.getElementById('remember-gemini-key').addEventListener('change', (e) => {
+            document.getElementById('remember-hf-token').addEventListener('change', (e) => {
                 localStorage.setItem(REMEMBER_HF_TOKEN_FLAG, e.target.checked);
                 if (e.target.checked) {
-                    const apiKey = document.getElementById('gemini-api-key').value;
+                    const token = document.getElementById('hf-token').value;
                     if (token) localStorage.setItem(HF_TOKEN_STORAGE, token);
                 } else {
                     localStorage.removeItem(HF_TOKEN_STORAGE);
@@ -1388,7 +1344,7 @@
 
             document.getElementById('hf-token').addEventListener('input', (e) => {
                 HF_TOKEN = e.target.value;
-                if (document.getElementById('remember-gemini-key').checked) {
+                if (document.getElementById('remember-hf-token').checked) {
                     localStorage.setItem(HF_TOKEN_STORAGE, HF_TOKEN);
                 }
                 updateAnalyzeButtonState();
@@ -2049,12 +2005,12 @@
             document.getElementById('help-modal').style.display = 'none';
         }
 
-        function openGeminiHelpModal() {
-            document.getElementById('gemini-help-modal').style.display = 'block';
+        function openHFHelpModal() {
+            document.getElementById('hf-help-modal').style.display = 'block';
         }
 
-        function closeGeminiHelpModal() {
-            document.getElementById('gemini-help-modal').style.display = 'none';
+        function closeHFHelpModal() {
+            document.getElementById('hf-help-modal').style.display = 'none';
         }
 
         function translateBack(sourceId) {
@@ -2322,25 +2278,15 @@
             reader.readAsDataURL(file);
         }
 
-        function removeImage() {
-            currentImageFile = null;
-            currentImageBase64 = null;
-            document.getElementById('image-preview-container').style.display = 'none';
-            document.getElementById('image-prompt-result-container').style.display = 'none';
-            document.getElementById('image-file-input').value = '';
-            updateAnalyzeButtonState();
-            showNotification('🗑️ Изображение удалено', 'success');
-        }
-
         function updateAnalyzeButtonState() {
-            const apiKey = document.getElementById('gemini-api-key').value.trim();
+            const token = document.getElementById('hf-token').value.trim();
             const btn = document.getElementById('analyze-image-btn');
-            btn.disabled = !(currentImageFile && apiKey);
+            btn.disabled = !(currentImageFile && token);
         }
 
         async function analyzeImage() {
-            const apiKey = document.getElementById('gemini-api-key').value.trim();
-            if (!apiKey || !currentImageBase64) return;
+            const token = document.getElementById('hf-token').value.trim();
+            if (!token || !currentImageFile) return;
 
             const btn = document.getElementById('analyze-image-btn');
             const btnText = document.getElementById('analyze-btn-text');
@@ -2348,54 +2294,41 @@
             btnText.innerHTML = '<span class="loading-spinner"></span>Анализ изображения...';
 
             try {
-                const prompt = "Проанализируй это изображение подробно для генерации похожих изображений с помощью AI. Опиши: главный объект/субъект, композицию, цвета, освещение, стиль, настроение и художественные элементы. Сфокусируйся на визуальных характеристиках, которые помогут воссоздать похожее изображение. Ответ дай на русском языке.";
-
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                const base64Image = await fileToBase64(currentImageFile);
+                
+                const response = await fetch('https://api-inference.huggingface.co/models/llava-hf/llava-1.5-7b-hf', {
                     method: 'POST',
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: prompt },
-                                {
-                                    inline_data: {
-                                        mime_type: currentImageFile.type,
-                                        data: currentImageBase64
-                                    }
-                                }
-                            ]
-                        }]
+                        inputs: {
+                            question: "Describe this image in detail for AI image generation. Include: main subject, composition, colors, lighting, style, mood, and artistic elements. Focus on visual characteristics that would help recreate a similar image.",
+                            image: base64Image
+                        }
                     })
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error?.message || `API Error: ${response.status}`);
+                    throw new Error(errorData.error || `API Error: ${response.status}`);
                 }
 
                 const data = await response.json();
-                const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Не удалось получить описание';
+                let answer = data[0]?.generated_text || data.answer || 'Не удалось получить описание';
                 
-                document.getElementById('image-prompt-result').textContent = resultText;
+                const russianPrompt = await translateText(answer, 'ru');
+                
+                document.getElementById('image-prompt-result').textContent = russianPrompt;
                 document.getElementById('image-prompt-result-container').style.display = 'block';
                 showNotification('✅ Изображение проанализировано!', 'success');
             } catch (error) {
-                console.error('Gemini analysis error:', error);
-                let errorMessage = '❌ Ошибка анализа: ';
-                if (error.message.includes('API_KEY_INVALID')) {
-                    errorMessage += 'Неверный API ключ. Проверьте ключ и попробуйте снова.';
-                } else if (error.message.includes('QUOTA_EXCEEDED')) {
-                    errorMessage += 'Превышен лимит запросов. Попробуйте позже.';
-                } else {
-                    errorMessage += error.message;
-                }
-                showNotification(errorMessage, 'error');
+                console.error('Image analysis error:', error);
+                showNotification('❌ Ошибка анализа изображения: ' + error.message, 'error');
             } finally {
                 btn.disabled = false;
                 btnText.innerHTML = '🔍 Анализировать изображение';
-                updateAnalyzeButtonState();
             }
         }
 
